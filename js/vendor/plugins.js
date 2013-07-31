@@ -1,4 +1,4 @@
-// Avoid `console` errors in browsers that lack a console.
+(function($) {// Avoid `console` errors in browsers that lack a console.
 if (!(window.console && console.log)) {
     (function() {
         var noop = function() {};
@@ -88,3 +88,4 @@ b.escaper="escaper"in a?a.escaper:d.csv.defaults.escaper;b.experimental="experim
 a?a.escaper:d.csv.defaults.escaper;b.experimental="experimental"in a?a.experimental:false;if(!b.experimental)throw Error("not implemented");a=[];for(i in e)a.push(arrays[i]);if(b.callback)b.callback("",a);else return a}};d.csvEntry2Array=d.csv.toArray;d.csv2Array=d.csv.toArrays;d.csv2Dictionary=d.csv.toObjects})(jQuery);
 
 
+})(jQuery);

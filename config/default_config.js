@@ -1,3 +1,4 @@
+(function($) {
 ChartBuilder.allColors = ["BF0053","FF70B0","E15D98","C44B81","A63869","882551","6B133A","4D0022",
 						"BF600A","FFC07E","E1A76A","C48D55","A67341","885A2D","6B4118","4D2704",
 						"BFAA00","FFF270","E1D55D","C4B84B","A69C38","887F25","6B6213","4D4500",
@@ -33,3 +34,4 @@ Gneiss.customYAxisFormat = function(axisGroup,i) {
 			})
 	this.g = g;
 }
+})(jQuery);
