@@ -1,3 +1,4 @@
+
 var chart;
 ChartBuilder = {
 	allColors: ["ff4cf4","ffb3ff","e69ce6","cc87cc","b373b3","995f99","804c80","665266", //purples
@@ -10,7 +11,7 @@ ChartBuilder = {
 				],
 	curRaw: "",
 	getNewData: function() {
-		
+		var $ = jQuery;
 		var csvString = $("#csvInput").val()
 		var parseOptions = {
 			delimiter: "\"",
@@ -56,6 +57,7 @@ ChartBuilder = {
 		
 	},
 	parseData: function(a) {
+		var $ = jQuery;
 		var d = []
 		var parseFunc;
 		for (var i=0; i < a.length; i++) {
@@ -85,6 +87,7 @@ ChartBuilder = {
 		return d
 	},
 	mergeData: function(a) {
+	var $ = jQuery;
 		var d
 		for (var i=0; i < a.data.length; i++) {
 			d = a.data[i]
@@ -101,6 +104,7 @@ ChartBuilder = {
 		return a
 	},
 	pivotData: function(a){
+	var $ = jQuery;
 		var o = []
 		for (var i=0; i < a.length; i++) {
 			if(a[i]) {
@@ -118,6 +122,7 @@ ChartBuilder = {
 		return o
 	},
 	createTable: function(r,d){
+	var $ = jQuery;
 		$table = $("#dataTable table")
 		$table.text("")
 		$table.append("<tr><th>"+r[0].join("</th><th>")+"</th></tr>")
@@ -135,6 +140,7 @@ ChartBuilder = {
 		};
 	},
 	floatAll: function(a) {
+	var $ = jQuery;
 		for (var i=0; i < a.length; i++) {
 			if(a[i] && a[i].length > 0 && (/[\d\.]+/).test(a[i])) {
 				a[i] = parseFloat(a[i])
@@ -146,6 +152,7 @@ ChartBuilder = {
 		return a
 	},
 	dateAll: function(a) {
+	var $ = jQuery;
 		for (var i=0; i < a.length; i++) {
 			a[i] = Date.create(a[i])
 		};
@@ -155,11 +162,13 @@ ChartBuilder = {
 		return a
 	},
 	inlineAllStyles: function() {
-		var chartStyle, selector, cssText;
-		
+	var $ = jQuery;
+		var chartStyle, selector, cssText, cssWalky;
 		for (var i = document.styleSheets.length - 1; i >= 0; i--){
-			if(document.styleSheets[i].href.indexOf("gneisschart.css") != -1) {
+			cssWalky = document.styleSheets[i].href;
+			if((cssWalky !== null) && (cssWalky.indexOf("gneisschart.css") != -1)) {
 				chartStyle = document.styleSheets[i].rules
+				//alert('go');
 			}
 		}
 		for (var i=0; i < chartStyle.length; i++) {
@@ -170,7 +179,7 @@ ChartBuilder = {
 
 	},
 	createChartImage: function() {
-
+var $ = jQuery;
 		var canvas = document.getElementById("canvas")
 		canvas.width =1200
 		canvas.height = 676
@@ -207,6 +216,7 @@ ChartBuilder = {
 		
 	},
 	setFavicon: function() {
+	var $ = jQuery;
 		//set favicon to image of chart
 		var favicanvas = document.getElementById("favicanvas")
 		favicanvas.width = 64;
@@ -224,6 +234,7 @@ ChartBuilder = {
 		return icon;
 	},
 	redraw: function() {
+	var $ = jQuery;
 		$(".seriesItemGroup").detach()
 		$(".downloadLink").addClass("hide")
 		var g = chart.g, s, picker;
@@ -284,11 +295,13 @@ ChartBuilder = {
 												
 			seriesItem.data("index",i)
 			picker.change(function() {
+			var $ = jQuery;
 				chart.g.series[$(this).parent().data().index].color = $(this).val()
 				ChartBuilder.redraw()
 			})
 			
 			typer.change(function() {
+			var $ = jQuery;
 				var val = $(this).val(),
 				index = $(this).parent().data().index;
 				chart.g.series[index].type = val
@@ -301,6 +314,7 @@ ChartBuilder = {
 			})
 			
 			axer.change(function() {
+			var $ = jQuery;
 				var axis = $(this).is(':checked')?1:0;
 				chart.g.series[$(this).parent().data().index].axis = axis
 				
@@ -384,6 +398,7 @@ ChartBuilder = {
 		ChartBuilder.inlineAllStyles();
 	},
 	setChartArea: function() {
+	var $ = jQuery;
 		var hasBargrid = false;
 		for (var i = chart.g.series.length - 1; i >= 0; i--){
 			if(chart.g.series[i].type == "bargrid") {
@@ -404,7 +419,7 @@ ChartBuilder = {
 		}
 	},
 	makeLegendAdjustable: function() {
-		
+		var $ = jQuery;
 		var legendLabelDrag = d3.behavior.drag()
 		    .origin(Object)
 			.on("dragstart",function(d){
@@ -431,8 +446,10 @@ ChartBuilder = {
 		
 	},
 	getAllInputData: function() {
+	var $ = jQuery;
 		var d = {}, $el;
 		var elems = $("input, textarea, select:not(#previous_charts)").each(function() {
+		var $ = jQuery;
 			$el = $(this)
 			d[$el.attr("id")] = $el.val()
 		})
@@ -462,6 +479,7 @@ ChartBuilder = {
 		return charts
 	},
 	loadLocalChart: function(d) {
+	var $ = jQuery;
 		for (var key in d) {
 			if(key != "name") {
 				$("#"+key).val(d[key])
@@ -479,6 +497,7 @@ ChartBuilder = {
 	draws: 0,
 	actions: {
 		axis_prefix_change: function(index,that) {
+		var $ = jQuery;
 			chart.g.yAxis[index].prefix.value = $(that).val()
 			ChartBuilder.redraw()
 			ChartBuilder.inlineAllStyles();
@@ -533,9 +552,8 @@ ChartBuilder = {
 		}
 	}
 }
-
-$(document).ready(function() {
-	
+jQuery(document).ready(function() {
+	var $ = jQuery;
 	chartConfig.colors = []
 	for (var i=0; i < ChartBuilder.allColors.length; i++) {
 		chartConfig.colors[i] = "#"+ ChartBuilder.allColors[i]
