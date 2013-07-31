@@ -140,7 +140,7 @@ class qz_chartbuilder {
 		#global $pagenow;
 		wp_register_style(QZCB_SLUG . '-boilerplate', QZCB_URL . 'css/boilerplate.css');
 		wp_register_style(QZCB_SLUG . '-chartbuilder', QZCB_URL . 'css/chartbuilder.css');
-		wp_register_style(QZCB_SLUG . '-gneisschart', QZCB_URL . 'css/gneisschart.css');
+		wp_register_style(QZCB_SLUG . '-gneisschart', QZCB_URL . 'css/gneisschart.css', null, null);
 		wp_register_style(QZCB_SLUG . '-colorPicker', QZCB_URL . 'css/colorPicker.css');
 		wp_register_script('modernizr', QZCB_URL . "js/vendor/modernizr-2.6.1.min.js");
 		wp_enqueue_script('jquery', null, null, '1.8.1');
