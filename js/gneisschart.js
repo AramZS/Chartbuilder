@@ -11,10 +11,12 @@
 ```````````***`````**```````````***````````***`````````````***````***``````***`````````***```````````************````
 `````````````````````````````````````````````````````````````````````````````````````````````````````````````````````
 */
+
 var yAxisIndex
 
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
+
 
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
@@ -126,6 +128,7 @@ var Gneiss = {
 		/*
 			Initializes the chart from a config object
 		*/
+		var $ = jQuery;
 		var g = config
 		this.g = config 
 		//set container as a jquery object
@@ -191,6 +194,7 @@ var Gneiss = {
 		/*
 			Adjusts the size dependent stored variables
 		*/
+		var $ = jQuery;
 		var g = this.g
 		g.width = g.$container.width() //save the width in pixels
 		g.height = g.$container.height() //save the height in pixels
@@ -208,6 +212,7 @@ var Gneiss = {
 		/*
 			calculates and saves the y-scales from the existing data
 		*/
+		var $ = jQuery;
 		var g = this.g
 		/*
 		*
@@ -299,6 +304,7 @@ var Gneiss = {
 		/*
 			calulates and stores the proper amount of extra padding beyond what the user specified (to account for axes, titles, legends, meta)
 		*/
+		var $ = jQuery;
 		var g = this.g
 		var padding_top = g.defaults.padding.top,
 		padding_bottom = g.defaults.padding.bottom;
@@ -323,6 +329,7 @@ var Gneiss = {
 		/*
 			calculate and store the x-scales
 		*/
+		var $ = jQuery;
 		var g = this.g
 		var dateExtent, shortestPeriod = Infinity;
 		if(first) {
@@ -423,6 +430,7 @@ var Gneiss = {
 		
 	},
 	setLineMakers: function(first) {
+		var $ = jQuery;
 		var g = this.g
 
 		for (var i = g.yAxis.length - 1; i >= 0; i--){
@@ -448,6 +456,7 @@ var Gneiss = {
 		* Y-Axis Drawing Section
 		*
 		*/
+		var $ = jQuery;
 		var g = this.g;
 		var curAxis,axisGroup;
 		
@@ -494,6 +503,7 @@ var Gneiss = {
 			axisGroup
 				.selectAll("g")
 				.each(function(d,j) {
+					var $ = jQuery;
 					//create an object to store axisItem info
 					var axisItem = {}
 					
@@ -743,6 +753,7 @@ var Gneiss = {
 			.attr("text-anchor", g.xAxis.type == "date" ? "start": (g.isBargrid ? "end":"middle"))
 			//.attr("text-anchor", g.isBargrid ? "end":"middle")
 			.each(function() {
+				var $ = jQuery;
 				var pwidth = this.parentNode.getBBox().width
 				var attr = this.parentNode.getAttribute("transform")
 				var attrx = Number(attr.split("(")[1].split(",")[0])
@@ -776,7 +787,7 @@ var Gneiss = {
 		/*
 			Calculate the propper column width for column charts
 		*/
-		
+		var $ = jQuery;
 		var g = this.g
 		//store split by type for convenience
 		var sbt = g.sbt
@@ -807,6 +818,7 @@ var Gneiss = {
 		* Series Drawing Section
 		*
 		*/
+		var $ = jQuery;
 		var g = this.g
 		
 		var lineSeries;
