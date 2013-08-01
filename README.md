@@ -82,3 +82,7 @@ Gneisschart was created to assist in the above as well as establish the starting
 
 ###Styling the chart
 Chart styles are contained in `css/gneisschart.css`. The color palette is defined in `config/default_config.js`
+
+Bitnami Configuration
+--------------
+Based on the details at http://wiki.bitnami.com/BitNami_Cloud_Hosting/Applications/Custom_Applications
