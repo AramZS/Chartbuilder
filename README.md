@@ -86,3 +86,15 @@ Chart styles are contained in `css/gneisschart.css`. The color palette is define
 Bitnami Configuration
 --------------
 Based on the details at http://wiki.bitnami.com/BitNami_Cloud_Hosting/Applications/Custom_Applications
+
+You can upload this folder into your /apps directory.
+
+Then you must do the following:
+
++ Add the following line at the end of the main Apache config file /opt/bitnami/apache2/conf/httpd.conf:
+`Include "/opt/bitnami/apps/myphpapp/conf/myphpapp.conf"`
+
++ Restart the Apache web server:
+`sudo /opt/bitnami/ctlscript.sh restart apache`
+
+Don't forget to use sudo chown to fix any permissions issues!
