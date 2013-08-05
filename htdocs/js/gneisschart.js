@@ -16,6 +16,8 @@ var yAxisIndex
 //add prepend ability
 Element.prototype.prependChild = function(child) { this.insertBefore(child, this.firstChild); };
 
+Date.setLocale('en');
+
 //A default configuration 
 //Should change to more d3esque methods e.g. http://bost.ocks.org/mike/chart/
 var chartConfig = {
@@ -58,14 +60,6 @@ var chartConfig = {
 	],
 	series: [
 		{
-			name: "names",
-			data: ["juicyness","color","flavor","travelability"],
-			source: "Some Org",
-			type: "line",
-			axis: 0,
-			color: null
-		},
-		{
 			name: "apples",
 			data: [5.5,10.2,6.1,3.8],
 			source: "Some Org",
@@ -84,7 +78,8 @@ var chartConfig = {
 	],
 	xAxisRef: [
 		{
-			data: []
+			name: "names",
+			data: ["juicyness","color","flavor","travelability"],
 		}
 	],
 	sourceline: "",
@@ -92,35 +87,59 @@ var chartConfig = {
 }
 
 var Gneiss = {
-	longMonths: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-	shortMonths: ["Jan.","Feb.","March","April","May","June","July","Aug.","Sept.","Oct.","Nov.","Dec."],
 	dateParsers: {
-		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/");},
+		"mmddyyyy": function(d) {return [d.getMonth()+1,d.getDate(),d.getFullYear()].join("/")},
+		"ddmmyyyy": function(d) {return [d.getDate(),d.getMonth()+1,d.getFullYear()].join("/")},
 		"mmdd": function(d) {return [d.getMonth()+1,d.getDate()].join("/")},
 		"Mdd": function(d){
-			return Gneiss.shortMonths[d.getMonth()] +" "+ Number(d.getDate())
+			var month = d.getMonth()+1;
+			if(month == 5){
+				return d.format('{Mon}') +" "+ Number(d.getDate())
+			} 
+			else { 
+				return d.format('{Mon}.') +" "+ Number(d.getDate())
+			}
+		},
+		"ddM": function(d){
+			var month = d.getMonth()+1;
+			if(month == 5){
+				return Number(d.getDate()) +" "+ d.format('{mon}')
+			} 
+			else { 
+				return Number(d.getDate()) +" "+ d.format('{mon}.')
+			}
 		},
 		"mmyy": function(d) {return [d.getMonth()+1,String(d.getFullYear()).split("").splice(2,2).join("")].join("/")},
 		"yy": function(d) {return "’"+String(d.getFullYear()).split("").splice(2,2).join("")},
 		"yyyy": function(d) {return d.getFullYear()},
 		"MM": function(d) {
-			if(d.getMonth() == 0) {
-				return d.getFullYear();
+			var month = d.getMonth()+1;
+			if(month == 1) {
+				return d.getFullYear()
 			}
 			else {
-				return Gneiss.longMonths[d.getMonth()]
+				return d.format('{Month}')
 			}
-			
 		},
 		"M": function(d) {	
-			if(d.getMonth() == 0){
+			var month = d.getMonth()+1;
+			if(month == 1){
 				return "’"+String(d.getFullYear()).split("").splice(2,2).join("")
 			} 
+			else if(month == 5){ 
+				return d.format('{Mon}')
+			}
 			else { 
-				return Gneiss.shortMonths[d.getMonth()]
+				return d.format('{Mon}.')
 			}
 		},
-		"hmm": function(d) {var hours = d.getHours(), min = d.getMinutes(); hours = hours==0 ? 12 : hours ; return (hours > 12 ? hours-12 : hours) + ":" + (min < 10 ? "0"+min : min)},
+		"hmm": function(d) {
+			if(Date.getLocale().code == 'en'){
+				return d.format('{12hr}:{mm}')
+			} else {
+				return d.format('{24hr}:{mm}')
+			}
+		},
 	},
 	build: function(config) {
 		/*
@@ -428,13 +447,13 @@ var Gneiss = {
 		for (var i = g.yAxis.length - 1; i >= 0; i--){
 			if(first || !g.yAxis[i].line) {
 						g.yAxis[i].line = d3.svg.line();
-						g.yAxis[i].line.y(function(d,j){return d?g.yAxis[yAxisIndex].scale(d):null})
-						g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
+						g.yAxis[i].line.y(function(d,j){return d||d===0?g.yAxis[yAxisIndex].scale(d):null})
+						g.yAxis[i].line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
 			}
 			else {
 				for (var i = g.yAxis.length - 1; i >= 0; i--){
-					g.yAxis[i].line.y(function(d,j){return d?g.yAxis[yAxisIndex].scale(d):null})
-					g.yAxis[i].line.x(function(d,j){return d?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
+					g.yAxis[i].line.y(function(d,j){return d||d===0?g.yAxis[yAxisIndex].scale(d):null})
+					g.yAxis[i].line.x(function(d,j){return d||d===0?g.xAxis.scale(g.xAxisRef[0].data[j]):null})
 				};
 			}
 
@@ -466,7 +485,7 @@ var Gneiss = {
 					.orient(i==0?"right":"left")
 					.tickSize(g.width - g.padding.left - g.padding.right)
 					//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[i].ticks))
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
 					
 				//append axis container
 
@@ -478,7 +497,7 @@ var Gneiss = {
 			}
 			else {
 				g.yAxis[i].axis//.ticks(g.yAxis[0].ticks) // I'm not using built in ticks because it is too opinionated
-					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[i].ticks))
+					.tickValues(g.yAxis[i].tickValues?g.yAxis[i].tickValues:this.helper.exactTicks(g.yAxis[i].scale.domain(),g.yAxis[0].ticks))
 					
 				axisGroup = g.chart.selectAll(i==0?"#rightAxis":"#leftAxis")
 					.call(g.yAxis[i].axis)
@@ -1096,7 +1115,7 @@ var Gneiss = {
 					.attr("r",4)
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							var y = d ? g.yAxis[yAxisIndex].scale(d) : -100;
+							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
 							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
@@ -1104,7 +1123,7 @@ var Gneiss = {
 					.duration(500)
 					.attr("transform",function(d,i){
 						yAxisIndex = d3.select(this.parentElement).data()[0].axis;
-							var y = d ? g.yAxis[yAxisIndex].scale(d) : -100;
+							var y = d || d ===0 ? g.yAxis[yAxisIndex].scale(d) : -100;
 							return "translate("+ g.xAxis.scale(Gneiss.g.xAxisRef[0].data[i]) + "," + y + ")";
 						})
 			
@@ -1194,9 +1213,10 @@ var Gneiss = {
 					else {
 						return "translate("+g.padding.left+","+(g.padding.top-50)+")"
 					}
-					
 				});
-			
+
+			legendGroups.exit().remove()
+
 			var legLabels = legItems.append("text")
 					.filter(function(){return g.series.length > 1})
 					.attr("class","legendLabel")
@@ -1204,9 +1224,7 @@ var Gneiss = {
 					.attr("y",18)
 					.attr("fill",function(d,i){return d.color? d.color : g.colors[i]})
 					.text(function(d,i){return d.name});
-				
-		
-					
+			
 			//if there is more than one line
 			if(g.series.length > 1) {
 				legItems.append("rect")
@@ -1217,24 +1235,24 @@ var Gneiss = {
 					.attr("fill", function(d,i){return d.color? d.color : g.colors[i]})
 
 				var legendItemY;
-				legendGroups.each(function(d,i) {
-					if(i > 0) {
-						var prev = d3.select(legendGroups[0][i-1])
-						var prevWidth = parseFloat(prev.select("text").style("width").split("p")[0])
+				legendGroups.filter(function(d){return d != g.series[0]})
+					.transition()
+					.delay(100)
+					.attr("transform",function(d,i) {
+						//label isn't for the first series
+						var prev = d3.select(legendGroups[0][i])
+						var prevWidth = parseFloat(prev.node().getBBox().width)
 
 						var cur = d3.select(this)
-						var curWidth = parseFloat(cur.select("text").style("width").split("p")[0])
+						var curWidth = parseFloat(cur.node().getBBox().width)
 						legendItemY = cur.attr("transform").split(",")[1].split(")")[0];
-						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 20
-
+						var x = parseFloat(prev.attr("transform").split(",")[0].split("(")[1]) + prevWidth + 5
 						if(x + curWidth > g.width) {
 							x = g.padding.left
 							legendItemY += 15;						
 						}
-						d3.select(this).attr("transform","translate("+x+","+legendItemY+")")
-					}
-				})
-		
+						return "translate("+x+","+legendItemY+")"
+				})		
 				//test if the chart needs more top margin because of a large number of legend items
 				if (legendItemY > 0 && g.padding.top == 25) { //CHANGE
 					g.padding.top = legendItemY + 25;
